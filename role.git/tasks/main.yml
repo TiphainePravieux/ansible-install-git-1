@@ -1,0 +1,9 @@
+---
+# tasks file for role.git
+- include_tasks: variables.yml
+
+- include_tasks: setup-Ubuntu.yml
+  when: ansible_distribution == 'Ubuntu'
+
+- include_tasks: setup-CentOS.yml
+  when: ansible_distribution == 'CentOS'

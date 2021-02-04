@@ -18,4 +18,60 @@
       - perl-devel
       - openssl-devel
       - zlib-devel
-
+- name: get git version
+  get_url:
+    url: 'https://github.com/git/git/archive/v2.30.0.tar.gz'
+    dest: /home/centos
+  tags:
+    - get_git
+- name:  untar git file
+  unarchive:
+    src: /home/centos/git-2.30.0.tar.gz
+    dest: /home/centos
+    remote_src: yes
+  tags:
+    - untar
+- name:  run autoconf
+  shell: cd /home/centos/git-2.30.0 && autoconf
+  tags:
+    - autoconf
+- name: run configure
+  shell: cd /home/centos/git-2.30.0 &&  ./configure
+  register: result
+  tags:
+    - configure
+- name: nproc
+  shell: nproc
+  register: nproc_value
+  tags:
+    - nproc
+- name: make
+  shell:  cd /home/centos/git-2.30.0 &&  make -j{{ nproc_value.stdout}}
+  tags:
+    - make
+- name: run make test async
+  shell: cd /home/centos/git-2.30.0 && make -j{{ nproc_value.stdout}} test
+  async: 1800
+  poll: 0
+  register: make_test_task
+  tags:
+    - make_test
+- name: check on async task
+  async_status:
+    jid: "{{ make_test_task.ansible_job_id }}"
+  register: job_result
+  until: job_result.finished
+  retries: 100
+  delay: 10
+  tags:
+    - make_test_result
+- name: get async result
+  debug:
+    msg: "async value: {{ job_result.stdout }}"
+  tags:
+    - result
+- name: make install
+  become: true
+  shell: cd /home/centos/git-2.30.0 && make install
+  tags:
+    - make_install

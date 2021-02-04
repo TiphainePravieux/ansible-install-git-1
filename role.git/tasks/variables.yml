@@ -4,10 +4,10 @@
   include_vars: "{{ ansible_distribution }}-{{ ansible_distribution_version.split('.')[0] }}.yml"
   when: ansible_distribution == "Centos"
 
- - name: Include OS-specific
+- name: Include OS-specific
   include_vars: "{{ ansible_distribution }}-{{ ansible_distribution_version.split('.')[0] }}.yml"
   when: ansible_distribution == "Ubuntu"
 
-  - name: Include OS-specific
+- name: Include OS-specific
   include_vars: "{{ ansible_distribution }}-{{ ansible_distribution_version.split('.')[0] }}.yml"
   when: ansible_distribution == "Alpine"

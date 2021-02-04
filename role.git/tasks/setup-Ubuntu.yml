@@ -27,6 +27,7 @@
   unarchive:
     src: /home/ubuntu/git-2.30.0.tar.gz
     dest: /home/ubuntu
+    remote_src: yes
   tags:
     - untar
 - name:  run autoconf
