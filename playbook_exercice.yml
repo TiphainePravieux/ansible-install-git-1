@@ -1,0 +1,31 @@
+---
+- hosts: centos
+  tasks:
+    - name: get disk structure
+      become: true
+      command: fdisk -l
+      register: disk_structure
+    - name: debug
+      debug:
+        msg: "{{ disk_structure.stdout | get_device}}"
+  - name: format disk
+    filesystem:
+      fstype: ext4
+      dev: "{{ disk_structure.stdout | get_device }}"
+
+#---
+#- name: format disk
+#  become: true
+#  hosts: centosvm
+#  tasks:
+#  - name: get disk structure
+#    become: true
+#    command: fdisk -l
+#    register: get_disk
+#  - name: debug
+#    debug:
+#      msg: " device : {​​{​​ get_disk.stdout | get_device }​​}​​"
+  #- name: Format disk
+  #  filesystem:
+  #    fstype: ext4
+  #    dev: "{​​{​​ get_disk.stdout | get_device }​​}​​"
